@@ -17,8 +17,7 @@ public class AlternativeExchange {
 
         Map<String, Object> arguments = new HashMap<>();
         arguments.put("alternate-exchange", "alt.fanout.exchange");
-        channel.exchangeDeclare("alt.topic.exchange", BuiltinExchangeType.TOPIC, true,
-                false, arguments);
+        channel.exchangeDeclare("alt.topic.exchange", BuiltinExchangeType.TOPIC, true, false, arguments);
         channel.close();
     }
 
@@ -90,7 +89,5 @@ public class AlternativeExchange {
 //        subscribe.start();
         publish.start();
     }
-
-}
 
 }
