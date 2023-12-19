@@ -35,7 +35,7 @@ public class FanoutExchange {
         channel.close();
     }
 
-    public static void subscribeManager() throws IOException, TimeoutException {
+    public static void subscribeMessage() throws IOException, TimeoutException {
         Channel channel = ConnectionManager.getConnection().createChannel();
 
         channel.basicConsume("LightQ", true, ((consumerTag, message) -> {
@@ -58,5 +58,45 @@ public class FanoutExchange {
         }), consumerTag -> {
             System.out.println(consumerTag);
         });
+    }
+
+    public static void publishMessage() throws IOException, TimeoutException {
+        Channel channel = ConnectionManager.getConnection().createChannel();
+
+        String message = "Main Power is ON";
+        channel.basicPublish("my-fanout-exchange", "", null, message.getBytes());
+
+        channel.close();
+    }
+
+    public static void main(String[] args) throws IOException, TimeoutException {
+        FanoutExchange.declareQueue();
+        FanoutExchange.declareExchange();
+        FanoutExchange.declareBindings();
+
+        Thread subscribe = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    FanoutExchange.subscribeMessage();
+                } catch (IOException | TimeoutException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+
+        Thread publish = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    FanoutExchange.publishMessage();
+                } catch (IOException | TimeoutException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+
+        subscribe.start();
+        publish.start();
     }
 }
