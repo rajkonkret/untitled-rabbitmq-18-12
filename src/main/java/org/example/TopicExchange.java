@@ -53,7 +53,39 @@ public class TopicExchange {
         channel.close();
     }
 
-    public static void main(String[] args) throws IOException, TimeoutException {
+    public static void subscribeMessage() throws IOException, TimeoutException {
+        Channel channel = ConnectionManager.getConnection().createChannel();
+
+        channel.basicConsume("HealthQ", true, ((consumerTag, message) -> {
+            System.out.println("\n\n========= Health Queue ==========");
+            System.out.println(consumerTag);
+            System.out.println("HealthQ" + new String(message.getBody()));
+            System.out.println(message.getEnvelope());
+        }), consumerTag -> {
+            System.out.println(consumerTag);
+        });
+
+        channel.basicConsume("SportsQ", true, ((consumerTag, message) -> {
+            System.out.println("\n\n========= Sports Queue ==========");
+            System.out.println(consumerTag);
+            System.out.println("SportsQ" + new String(message.getBody()));
+            System.out.println(message.getEnvelope());
+        }), consumerTag -> {
+            System.out.println(consumerTag);
+        });
+
+        channel.basicConsume("EducationQ", true, ((consumerTag, message) -> {
+            System.out.println("\n\n========= Education Queue ==========");
+            System.out.println(consumerTag);
+            System.out.println("EducationQ" + new String(message.getBody()));
+            System.out.println(message.getEnvelope());
+        }), consumerTag -> {
+            System.out.println(consumerTag);
+        });
+    }
+
+
+        public static void main(String[] args) throws IOException, TimeoutException {
         TopicExchange.declareQueue();
         TopicExchange.declareExchange();
         TopicExchange.declareBindings();
