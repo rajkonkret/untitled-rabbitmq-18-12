@@ -1,6 +1,5 @@
 package org.example;
 
-import ch.qos.logback.core.model.TimestampModel;
 import com.rabbitmq.client.BuiltinExchangeType;
 import com.rabbitmq.client.Channel;
 
