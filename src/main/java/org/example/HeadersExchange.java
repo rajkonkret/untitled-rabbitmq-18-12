@@ -99,15 +99,20 @@ public class HeadersExchange {
 
         message = "Headers exchange example 2";
         Map<String, Object> headerMap2 = new HashMap<>();
-
         headerMap2.put("h2", "Header2");
         properties = new BasicProperties()
                 .builder().headers(headerMap2).build();
         channel.basicPublish("my-header-exchange", "", properties, message.getBytes());
 
+        message = "Headers exchange example 4";
+        Map<String, Object> headerMap4 = new HashMap<>();
+        headerMap4.put("h2", "Header2");
+        properties = new BasicProperties()
+                .builder().headers(headerMap4).build();
+        channel.basicPublish("my-header-exchange", "", properties, message.getBytes());
+
         message = "Headers exchange example 3";
         Map<String, Object> headerMap3 = new HashMap<>();
-
         headerMap3.put("h3", "Headers3");
         properties = new BasicProperties()
                 .builder().headers(headerMap3).build();
