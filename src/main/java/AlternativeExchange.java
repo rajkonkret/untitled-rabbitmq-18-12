@@ -59,21 +59,61 @@ public class AlternativeExchange {
 
     }
 
+    public static void subscribeMessage() throws IOException, TimeoutException {
+        Channel channel = ConnectionManager.getConnection().createChannel();
+
+        channel.basicConsume("HealthQ", true, ((consumerTag, message) -> {
+            System.out.println("\n\n========= Health Queue ==========");
+            System.out.println(consumerTag);
+            System.out.println("HealthQ" + new String(message.getBody()));
+            System.out.println(message.getEnvelope());
+        }), consumerTag -> {
+            System.out.println(consumerTag);
+        });
+
+        channel.basicConsume("SportsQ", true, ((consumerTag, message) -> {
+            System.out.println("\n\n========= Sports Queue ==========");
+            System.out.println(consumerTag);
+            System.out.println("SportsQ" + new String(message.getBody()));
+            System.out.println(message.getEnvelope());
+        }), consumerTag -> {
+            System.out.println(consumerTag);
+        });
+
+        channel.basicConsume("EducationQ", true, ((consumerTag, message) -> {
+            System.out.println("\n\n========= Education Queue ==========");
+            System.out.println(consumerTag);
+            System.out.println("EducationQ" + new String(message.getBody()));
+            System.out.println(message.getEnvelope());
+        }), consumerTag -> {
+            System.out.println(consumerTag);
+        });
+
+        channel.basicConsume("FaultQueue", true, ((consumerTag, message) -> {
+            System.out.println("\n\n========= Fault Queue ==========");
+            System.out.println(consumerTag);
+            System.out.println("FaultQueue" + new String(message.getBody()));
+            System.out.println(message.getEnvelope());
+        }), consumerTag -> {
+            System.out.println(consumerTag);
+        });
+    }
+
     public static void main(String[] args) throws IOException, TimeoutException {
         AlternativeExchange.declareQueues();
         AlternativeExchange.declareExchange();
         AlternativeExchange.declareBindings();
 
-//        Thread subscribe = new Thread() {
-//            @Override
-//            public void run() {
-//                try {
-//                    ExchangeToExchange.subscribeMessage();
-//                } catch (IOException | TimeoutException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        };
+        Thread subscribe = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    AlternativeExchange.subscribeMessage();
+                } catch (IOException | TimeoutException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
 
         Thread publish = new Thread() {
             @Override
@@ -86,7 +126,7 @@ public class AlternativeExchange {
             }
         };
 
-//        subscribe.start();
+        subscribe.start();
         publish.start();
     }
 
