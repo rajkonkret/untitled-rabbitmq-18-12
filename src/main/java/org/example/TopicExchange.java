@@ -90,16 +90,16 @@ public class TopicExchange {
         TopicExchange.declareExchange();
         TopicExchange.declareBindings();
 
-//        Thread subscribe = new Thread() {
-//            @Override
-//            public void run() {
-//                try {
-//                    FanoutExchange.subscribeMessage();
-//                } catch (IOException | TimeoutException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        };
+        Thread subscribe = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    TopicExchange.subscribeMessage();
+                } catch (IOException | TimeoutException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
 
         Thread publish = new Thread() {
             @Override
@@ -112,7 +112,7 @@ public class TopicExchange {
             }
         };
 
-//        subscribe.start();
+        subscribe.start();
         publish.start();
     }
 }
