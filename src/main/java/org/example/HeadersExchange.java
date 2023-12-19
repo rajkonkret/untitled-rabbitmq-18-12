@@ -1,12 +1,13 @@
 package org.example;
 
+import com.rabbitmq.client.AMQP.BasicProperties;
 import com.rabbitmq.client.BuiltinExchangeType;
 import com.rabbitmq.client.Channel;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.TimeoutException;
 
 public class HeadersExchange {
@@ -42,14 +43,14 @@ public class HeadersExchange {
         sportsArgs.put("x-match", "all");  // all czyli and - i
         sportsArgs.put("h1", "Header1");
         sportsArgs.put("h2", "Header2");
-        channel.queueBind("SportsQ", "my-topic-exchange", "", sportsArgs);
+        channel.queueBind("SportsQ", "my-header-exchange", "", sportsArgs);
 
         Map<String, Object> educationArgs = new HashMap<>();
 
         educationArgs.put("x-match", "any");
         educationArgs.put("h1", "Header1");
         educationArgs.put("h2", "Header2");
-        channel.queueBind("EducationQ", "my-topic-exchange", "", educationArgs);
+        channel.queueBind("EducationQ", "my-header-exchange", "", educationArgs);
 
         channel.close();
     }
@@ -88,18 +89,53 @@ public class HeadersExchange {
     public static void publishMessage() throws IOException, TimeoutException {
         Channel channel = ConnectionManager.getConnection().createChannel();
 
-        String message = "Drink a lot of Water and stay Healthy";
-        channel.basicPublish("my-topic-exchange", "health.education", null, message.getBytes());
+        String message = "Headers exchange example 1";
+        Map<String, Object> headerMap = new HashMap<>();
+        headerMap.put("h1", "Header1");
+        headerMap.put("h2", "Header2");
+        BasicProperties properties = new BasicProperties()
+                .builder().headers(headerMap).build();
+        channel.basicPublish("my-header-exchange", "", properties, message.getBytes());
 
-        message = "Learn somthing new everyday";
-        channel.basicPublish("my-topic-exchange", "education", null, message.getBytes());
+        message = "Headers exchange example 1";
+        Map<String, Object> headerMap2 = new HashMap<>();
 
-        message = "Stay fit in Mind and Body";
-        channel.basicPublish("my-topic-exchange", "education.health", null, message.getBytes());
-
-        message = "Just do it";
-        channel.basicPublish("my-topic-exchange", "sports.sports", null, message.getBytes());
+        headerMap2.put("h2", "Header2");
+        properties = new BasicProperties()
+                .builder().headers(headerMap2).build();
+        channel.basicPublish("my-header-exchange", "", properties, message.getBytes());
 
         channel.close();
+    }
+
+    public static void main(String[] args) throws IOException, TimeoutException {
+        HeadersExchange.declareQueue();
+        HeadersExchange.declareExchange();
+        HeadersExchange.declareBindings();
+
+        Thread subscribe = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    HeadersExchange.subscribeMessage();
+                } catch (IOException | TimeoutException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+
+        Thread publish = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    HeadersExchange.publishMessage();
+                } catch (IOException | TimeoutException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+
+//        subscribe.start();
+        publish.start();
     }
 }
