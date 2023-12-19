@@ -97,13 +97,21 @@ public class HeadersExchange {
                 .builder().headers(headerMap).build();
         channel.basicPublish("my-header-exchange", "", properties, message.getBytes());
 
-        message = "Headers exchange example 1";
+        message = "Headers exchange example 2";
         Map<String, Object> headerMap2 = new HashMap<>();
 
         headerMap2.put("h2", "Header2");
         properties = new BasicProperties()
                 .builder().headers(headerMap2).build();
         channel.basicPublish("my-header-exchange", "", properties, message.getBytes());
+
+        message = "Headers exchange example 3";
+        Map<String, Object> headerMap3 = new HashMap<>();
+
+        headerMap3.put("h3", "Headers3");
+        properties = new BasicProperties()
+                .builder().headers(headerMap3).build();
+        channel.basicPublish("my-header-exchange2", "", properties, message.getBytes());
 
         channel.close();
     }
@@ -135,7 +143,7 @@ public class HeadersExchange {
             }
         };
 
-//        subscribe.start();
+        subscribe.start();
         publish.start();
     }
 }
