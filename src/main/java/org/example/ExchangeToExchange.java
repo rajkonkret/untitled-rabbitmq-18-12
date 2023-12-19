@@ -63,22 +63,71 @@ public class ExchangeToExchange {
         channel.close();
     }
 
+    public static void subscribeMessage() throws IOException, TimeoutException {
+        Channel channel = ConnectionManager.getConnection().createChannel();
+
+        channel.basicConsume("MobileQ", true, ((consumerTag, message) -> {
+            System.out.println("\n\n========= Mobile Queue ==========");
+            System.out.println(consumerTag);
+            System.out.println("MobileQ" + new String(message.getBody()));
+            System.out.println(message.getEnvelope());
+        }), consumerTag -> {
+            System.out.println(consumerTag);
+        });
+
+        channel.basicConsume("ACQ", true, ((consumerTag, message) -> {
+            System.out.println("\n\n========= ACQ Queue ==========");
+            System.out.println(consumerTag);
+            System.out.println("ACQ" + new String(message.getBody()));
+            System.out.println(message.getEnvelope());
+        }), consumerTag -> {
+            System.out.println(consumerTag);
+        });
+
+        channel.basicConsume("LightQ", true, ((consumerTag, message) -> {
+            System.out.println("\n\n========= Light Queue ==========");
+            System.out.println(consumerTag);
+            System.out.println("LightQ" + new String(message.getBody()));
+            System.out.println(message.getEnvelope());
+        }), consumerTag -> {
+            System.out.println(consumerTag);
+        });
+
+        channel.basicConsume("LaptopQ", true, ((consumerTag, message) -> {
+            System.out.println("\n\n========= Laptop Queue ==========");
+            System.out.println(consumerTag);
+            System.out.println("LaptopQ" + new String(message.getBody()));
+            System.out.println(message.getEnvelope());
+        }), consumerTag -> {
+            System.out.println(consumerTag);
+        });
+
+        channel.basicConsume("FanQ", true, ((consumerTag, message) -> {
+            System.out.println("\n\n========= FanQ Queue ==========");
+            System.out.println(consumerTag);
+            System.out.println("FanQ" + new String(message.getBody()));
+            System.out.println(message.getEnvelope());
+        }), consumerTag -> {
+            System.out.println(consumerTag);
+        });
+    }
+
     public static void main(String[] args) throws IOException, TimeoutException {
         ExchangeToExchange.declareQueues();
         ExchangeToExchange.declareExchanges();
         ExchangeToExchange.declareQueueBindings();
         ExchangeToExchange.declareExchangesBindings();
 
-//        Thread subscribe = new Thread() {
-//            @Override
-//            public void run() {
-//                try {
-//                    HeadersExchange.subscribeMessage();
-//                } catch (IOException | TimeoutException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        };
+        Thread subscribe = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    ExchangeToExchange.subscribeMessage();
+                } catch (IOException | TimeoutException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
 
         Thread publish = new Thread() {
             @Override
@@ -91,7 +140,7 @@ public class ExchangeToExchange {
             }
         };
 
-//        subscribe.start();
+        subscribe.start();
         publish.start();
     }
 
