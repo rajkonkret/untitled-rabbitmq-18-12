@@ -85,7 +85,7 @@ public class TopicExchange {
     }
 
 
-        public static void main(String[] args) throws IOException, TimeoutException {
+    public static void main(String[] args) throws IOException, TimeoutException {
         TopicExchange.declareQueue();
         TopicExchange.declareExchange();
         TopicExchange.declareBindings();
