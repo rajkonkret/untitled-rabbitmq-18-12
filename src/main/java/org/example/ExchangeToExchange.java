@@ -63,4 +63,36 @@ public class ExchangeToExchange {
         channel.close();
     }
 
+    public static void main(String[] args) throws IOException, TimeoutException {
+        ExchangeToExchange.declareQueues();
+        ExchangeToExchange.declareExchanges();
+        ExchangeToExchange.declareQueueBindings();
+        ExchangeToExchange.declareExchangesBindings();
+
+//        Thread subscribe = new Thread() {
+//            @Override
+//            public void run() {
+//                try {
+//                    HeadersExchange.subscribeMessage();
+//                } catch (IOException | TimeoutException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        };
+
+        Thread publish = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    ExchangeToExchange.publishMessage();
+                } catch (IOException | TimeoutException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+
+//        subscribe.start();
+        publish.start();
+    }
+
 }
